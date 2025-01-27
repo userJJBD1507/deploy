@@ -50,7 +50,7 @@ public class SecurityConfiguration {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(c -> c.disable())
                 .authorizeHttpRequests(c -> c.requestMatchers("/error", "/afterLoggingOut").permitAll()
-                        .requestMatchers("/admin/info", "/swagger-ui/**", "/v3/api-docs/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/info").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .logout(logout -> logout
                         .logoutSuccessHandler(handler))
@@ -100,7 +100,7 @@ public class SecurityConfiguration {
     public LogoutSuccessHandler keycloakLogoutSuccessHandler(ClientRegistrationRepository repository) {
         OidcClientInitiatedLogoutSuccessHandler oidcLogoutSuccessHandler =
                 new OidcClientInitiatedLogoutSuccessHandler(repository);
-        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("http://localhost:8081/afterLoggingOut");
+        oidcLogoutSuccessHandler.setPostLogoutRedirectUri("https://id.frolovinr.com/afterLoggingOut");
         return oidcLogoutSuccessHandler;
     }
 
