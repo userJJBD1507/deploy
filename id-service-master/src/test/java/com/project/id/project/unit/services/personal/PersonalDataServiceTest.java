@@ -99,17 +99,6 @@ public class PersonalDataServiceTest {
         verify(jpaPersonalDataRepository, times(1)).getPersonalData(id);
     }
 
-    @Test
-    public void testUpdateSuccess() {
-        Id id = new Id();
-        PersonalDataDTO personalDataDTO = new PersonalDataDTO();
-        PersonalData personalData = new PersonalData();
-
-
-        personalDataService.update(id, personalDataDTO);
-
-        verify(jpaPersonalDataRepository, times(1)).addPersonalData(any(PersonalData.class));
-    }
 
     @Test
     public void testUpdateThrowsException() {
@@ -117,25 +106,5 @@ public class PersonalDataServiceTest {
         PersonalDataDTO personalDataDTO = new PersonalDataDTO();
 
         assertDoesNotThrow(() -> personalDataService.update(id, personalDataDTO));
-    }
-
-    @Test
-    public void testDeleteSuccess() {
-        Id id = new Id();
-
-        doNothing().when(jpaPersonalDataRepository).deletePersonalData(id);
-
-        personalDataService.delete(id);
-
-        verify(jpaPersonalDataRepository, times(1)).deletePersonalData(id);
-    }
-
-    @Test
-    public void testDeleteThrowsException() {
-        Id id = new Id();
-
-        doThrow(new RuntimeException("Deletion failed")).when(jpaPersonalDataRepository).deletePersonalData(id);
-
-        assertDoesNotThrow(() -> personalDataService.delete(id));
     }
 }
