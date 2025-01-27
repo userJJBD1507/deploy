@@ -31,6 +31,10 @@ import org.springframework.security.web.server.authentication.logout.ServerLogou
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Configuration
@@ -103,17 +107,29 @@ public class SecurityConfiguration {
         oidcLogoutSuccessHandler.setPostLogoutRedirectUri("https://id.frolovinr.com/afterLoggingOut");
         return oidcLogoutSuccessHandler;
     }
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        List<String> allowOrigins = Arrays.asList("*");
+        configuration.setAllowedOrigins(allowOrigins);
+        configuration.setAllowedMethods(Collections.singletonList("*"));
+        configuration.setAllowedHeaders(Collections.singletonList("*"));
+        //in case authentication is enabled this flag MUST be set, otherwise CORS requests will fail
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
+    // @Bean
+    //     public CorsConfigurationSource corsConfigurationSource() {
+    //         CorsConfiguration corsConfig = new CorsConfiguration();
+    //         corsConfig.addAllowedOrigin("http://localhost:*");
+    //         corsConfig.addAllowedMethod("*");
+    //         corsConfig.addAllowedHeader("*");
 
-    @Bean
-        public CorsConfigurationSource corsConfigurationSource() {
-            CorsConfiguration corsConfig = new CorsConfiguration();
-            corsConfig.addAllowedOrigin("http://localhost:*");
-            corsConfig.addAllowedMethod("*");
-            corsConfig.addAllowedHeader("*");
-
-            UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-            source.registerCorsConfiguration("/**", corsConfig);
-            return source;
-        }
+    //         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    //         source.registerCorsConfiguration("/**", corsConfig);
+    //         return source;
+    // }
 }
+
