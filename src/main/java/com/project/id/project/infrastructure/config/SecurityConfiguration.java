@@ -109,7 +109,7 @@ public class SecurityConfiguration {
     }
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        List<String> allowOrigins = Arrays.asList("http://localhost:3001");
+        List<String> allowOrigins = Arrays.asList("https://localhost:3001");
         configuration.setAllowedOrigins(allowOrigins);
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));
