@@ -22,6 +22,7 @@ spec:
         IMAGE_NAME = 'ghcr.io/frolovinr/idservice'
         REPO_URL = 'https://github.com/userJJBD1507/deploy.git'
         DOCKER_FILE = 'Dockerfile'
+        REPORTS_DIR = "reports"
     }
     stages {
         
@@ -76,6 +77,64 @@ spec:
                 }
             }
         }
+
+        stage('Lint Dockerfile') {
+            
+            steps {
+                container('docker') {
+                    script {
+                        sh '''
+                        mkdir -p $REPORTS_DIR
+                        docker run --rm -i hadolint/hadolint < Dockerfile | tee $REPORTS_DIR/hadolint_report.txt
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Analyze Image with Dive') {
+            steps {
+                container('docker') {
+                    script {
+                        sh '''
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive $IMAGE_NAME:latest --ci > $REPORTS_DIR/dive_report.txt || true
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Scan for Vulnerabilities with Trivy') {
+            steps {
+                container('docker') {
+                    script {
+                        sh '''
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/workspace aquasec/trivy image --no-progress --format table -o /workspace/$REPORTS_DIR/trivy_report.txt $IMAGE_NAME:latest
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Check Best Practices with Dockle') {
+            steps {
+                container('docker') {
+                    script {
+                        sh '''
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/workspace goodwithtech/dockle --exit-code 0 --format markdown -o /workspace/$REPORTS_DIR/dockle_report.md $IMAGE_NAME:latest
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Archive Reports') {
+            steps {
+                archiveArtifacts artifacts: 'reports/*', fingerprint: true
+            }
+        }
+    
+
         stage('Push to GHCR') {
             steps {
                 container('docker') {
