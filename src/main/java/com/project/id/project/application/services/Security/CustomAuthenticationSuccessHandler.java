@@ -160,6 +160,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             Cookie cookie = new Cookie("flh", hashedData);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
+            cookie.setSecure(true);
             cookie.setMaxAge(315360000);
             response.addCookie(cookie);
             
@@ -185,6 +186,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             Cookie cookie = new Cookie("flh", hashedData);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
+            cookie.setSecure(true);
             cookie.setMaxAge(315360000);
             response.addCookie(cookie);
 
