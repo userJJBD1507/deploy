@@ -79,35 +79,52 @@ spec:
         }
 
         stage('Lint Dockerfile') {
+            
             steps {
-                sh '''
-                mkdir -p $REPORTS_DIR
-                docker run --rm -i hadolint/hadolint < Dockerfile | tee $REPORTS_DIR/hadolint_report.txt
-                '''
+                container('docker') {
+                    script {
+                        sh '''
+                        mkdir -p $REPORTS_DIR
+                        docker run --rm -i hadolint/hadolint < Dockerfile | tee $REPORTS_DIR/hadolint_report.txt
+                        '''
+                    }
+                }
             }
         }
 
         stage('Analyze Image with Dive') {
             steps {
-                sh '''
-                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive $IMAGE_NAME:latest --ci > $REPORTS_DIR/dive_report.txt || true
-                '''
+                container('docker') {
+                    script {
+                        sh '''
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock wagoodman/dive $IMAGE_NAME:latest --ci > $REPORTS_DIR/dive_report.txt || true
+                        '''
+                    }
+                }
             }
         }
 
         stage('Scan for Vulnerabilities with Trivy') {
             steps {
-                sh '''
-                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/workspace aquasec/trivy image --no-progress --format table -o /workspace/$REPORTS_DIR/trivy_report.txt $IMAGE_NAME:latest
-                '''
+                container('docker') {
+                    script {
+                        sh '''
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/workspace aquasec/trivy image --no-progress --format table -o /workspace/$REPORTS_DIR/trivy_report.txt $IMAGE_NAME:latest
+                        '''
+                    }
+                }
             }
         }
 
         stage('Check Best Practices with Dockle') {
             steps {
-                sh '''
-                docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/workspace goodwithtech/dockle --exit-code 0 --format markdown -o /workspace/$REPORTS_DIR/dockle_report.md $IMAGE_NAME:latest
-                '''
+                container('docker') {
+                    script {
+                        sh '''
+                        docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):/workspace goodwithtech/dockle --exit-code 0 --format markdown -o /workspace/$REPORTS_DIR/dockle_report.md $IMAGE_NAME:latest
+                        '''
+                    }
+                }
             }
         }
 
