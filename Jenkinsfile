@@ -19,7 +19,7 @@ spec:
     environment {
         GITHUB_CREDENTIALS_ID = 'github-credentials-id' // ID для GitHub в Jenkins
         GHCR_CREDENTIALS_ID = 'ghcr-credentials-id'     // ID для GHCR в Jenkins
-        IMAGE_NAME = 'ghcr.io/frolovinr/idservice'
+        IMAGE_NAME = 'ghcr.io/frolovinr/idservice-stage'
         REPO_URL = 'https://github.com/userJJBD1507/deploy.git'
         DOCKER_FILE = 'Dockerfile'
     }
