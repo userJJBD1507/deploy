@@ -40,8 +40,8 @@ public class ProjectApplication {
 		.realm("master")
 		.clientId("admin-cli")
 		.grantType(OAuth2Constants.PASSWORD)
-		.username("admin")
-		.password("admin")
+		.username("o5ni5Z4UGy556lJc")
+		.password("tl64bGPl4d4P3JM3")
 		.build();
 	}
 
