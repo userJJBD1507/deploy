@@ -36,7 +36,7 @@ public class ProjectApplication {
 	@Bean
 	public Keycloak keycloak() {
 		return KeycloakBuilder.builder()
-		.serverUrl("http://localhost:8080")
+		.serverUrl("https://sso.frolovinr.com")
 		.realm("master")
 		.clientId("admin-cli")
 		.grantType(OAuth2Constants.PASSWORD)
